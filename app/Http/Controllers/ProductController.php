@@ -103,4 +103,11 @@ class ProductController extends Controller
 
         return redirect()->route('admin.ProductHome')->with('success', 'Stok berhasil diupdate!');
     }
+ 
+    // Employee methods
+    public function employeeIndex()
+    {
+        $products = Product::all();
+        return view('employee.product.index', compact('products'));
+    }
 }

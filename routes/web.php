@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\CustomersController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('IsGuest')->group(function () {
@@ -54,4 +55,29 @@ Route::middleware('IsLogin', 'IsAdmin')->prefix('admin')->name('admin.')->group(
         Route::get('/print/{id}', [SaleController::class, 'exportPDFAd'])->name('exportPDFAd');
         Route::get('/excel', [SaleController::class, 'Excel'])->name('Excel');
     });
+});
+
+//employee
+Route::middleware('IsLogin', 'IsEmployee')->prefix('employee')->name('employee.')->group(function() {
+    Route::get('/dashboard', [UserController::class, 'dashboardEmployee'])->name('dashboard');
+
+    //product
+    Route::prefix('/product')->group(function() {
+        Route::get('/', [ProductController::class, 'employeeIndex'])->name('ProductIndex');
+    });
+
+    //purchases
+    Route::prefix('/sale')->group(function() {
+        Route::get('/', [SaleController::class, 'SaleIndex'])->name('SaleIndex');
+        Route::get('/create', [SaleController::class, 'create'])->name('SaleCreate');
+        Route::post('/store', [SaleController::class, 'store'])->name('SaleStore');
+        Route::post('/payment-proses', [SaleController::class, 'paymentProcess'])->name('paymentProcess');
+        Route::get('/member-edit/{id}', [SaleController::class, 'EditMember'])->name('EditMember');
+        Route::post('/member/{id}', [SaleController::class, 'member'])->name('Member');
+        Route::get('/detail-print/{id}', [SaleController::class, 'print'])->name('DetPrint');
+        Route::get('/print/{id}', [SaleController::class, 'exportPDF'])->name('ExportPDF');
+        Route::get('/excel', [SaleController::class, 'Excel'])->name('Excel');
+    });
+
+    Route::get('/customer/phone/{phone}', [CustomersController::class, 'getByPhone'])->name('CustomerPhone');
 });
